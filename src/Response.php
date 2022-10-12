@@ -237,11 +237,25 @@ class Response implements Responsable
     /**
      * Undocumented function
      *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->callMethod('headers') ?? [];
+    }
+
+    /**
+     * Undocumented function
+     *
      * @param \Illuminate\Http\Response $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function toResponse($request)
     {
-        return new JsonResponse($this->toArray($request));
+        return new JsonResponse(
+            $this->toArray($request),
+            $this->getStatusCode(),
+            $this->getHeaders()
+        );
     }
 }
