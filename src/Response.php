@@ -196,8 +196,16 @@ class Response implements Responsable
      */
     private function getErrorMessage(): ?string
     {
+        $data = $this->callMethod('data');
+
+        $errorMessage = $this->callMethod('errorMessage');
+
         if ($this->isSuccessful() === false) {
-            return $this->callMethod('errorMessage') ?? $this->errorMessages[$this->getStatusCode()] ?? "";
+            if ($errorMessage) return $errorMessage;
+
+            if (is_string($data)) return $data;
+
+            return $this->errorMessages[$this->getStatusCode()] ?? "";
         }
 
         return null;
