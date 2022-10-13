@@ -55,6 +55,20 @@ class ErrorHandler extends Response
         return $this->exception->getMessage();
     }
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return array|null
+	 */
+	protected function errors(): ?array
+	{
+		if (method_exists($this->exception, 'errors')) {
+			return $this->exception->errors();
+		}
+
+		return null;
+	}
+
     /**
      * Undocumented function
      *

@@ -239,6 +239,7 @@ class Response implements Responsable
         return array_filter([
             'error' => $this->getStatusText(),
             'message' => $this->getErrorMessage(),
+            'errors' => $this->callMethod('errors'),
             'data' => $this->getData(),
             'success' => $this->isSuccessful(),
             'status' => $this->getStatusCode()
