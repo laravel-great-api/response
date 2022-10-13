@@ -4,7 +4,6 @@ namespace LaravelGreatApi\Response;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 /**
@@ -205,7 +204,7 @@ class Response implements Responsable
 
             if (is_string($data)) return $data;
 
-            return $this->errorMessages[$this->getStatusCode()] ?? "";
+            return $this->errorMessages[$this->getStatusCode()] ?? null;
         }
 
         return null;
@@ -214,12 +213,16 @@ class Response implements Responsable
     /**
      * Undocumented function
      *
-     * @return array|null
+     * @return mixed
      */
-    private function getData(): ?array
+    private function getData(): mixed
     {
         if ($this->isSuccessful()) {
             return $this->callMethod('data') ?? [];
+        }
+
+        if (!$this->getErrorMessage() &&  $data = $this->callMethod('data')) {
+            return $data;
         }
 
         return null;
@@ -260,6 +263,11 @@ class Response implements Responsable
      */
     public function toResponse($request)
     {
+        return response()->json(
+            $this->toArray($request),
+            $this->getStatusCode(),
+            $this->getHeaders()
+        );
         return new JsonResponse(
             $this->toArray($request),
             $this->getStatusCode(),
